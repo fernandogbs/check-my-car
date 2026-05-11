@@ -11,7 +11,8 @@ export async function GET(request: NextRequest, context: CallbackContext) {
   const searchParams = request.nextUrl.searchParams
   const code = searchParams.get('code')
 
-  const nextRelative = searchParams.get('next') ?? `/${locale}`
+  const nextRelative =
+    searchParams.get('next') ?? `/${locale}/dashboard`
 
   if (!code) {
     return NextResponse.redirect(
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest, context: CallbackContext) {
   const safeNext =
     nextRelative.startsWith('/') && !nextRelative.startsWith('//')
       ? nextRelative
-      : `/${locale}`
+      : `/${locale}/dashboard`
 
   return NextResponse.redirect(new URL(safeNext, request.url))
 }

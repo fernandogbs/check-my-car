@@ -44,5 +44,5 @@ export async function signInWithEmailPassword(
     return { ok: false, code: 'invalidCredentials' }
   }
 
-  redirect(`/${locale}`)
+  redirect(`/${locale}/dashboard`)
 }

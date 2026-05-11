@@ -7,9 +7,10 @@
   },
   "Nav": {
     "dashboard": "Dashboard",
-    "explore": "Explore",
-    "activities": "Activities",
-    "profile": "Profile"
+    "newRequest": "Nova solicitação",
+    "explore": "Explorar",
+    "activities": "Atividades",
+    "profile": "Perfil"
   },
   "InspectionRequest": {
     "title": "Nova Solicitação",
@@ -85,7 +86,7 @@
     }
   },
   "Auth": {
-    "brandName": "AutoInspect",
+    "brandName": "Check My Car",
     "pageTitle": "Bem-vindo de volta",
     "pageDescription": "Entre para gerenciar as inspeções do seu veículo.",
     "roleLabel": "Eu sou…",

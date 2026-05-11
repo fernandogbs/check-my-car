@@ -7,6 +7,7 @@
   },
   "Nav": {
     "dashboard": "Dashboard",
+    "newRequest": "New request",
     "explore": "Explore",
     "activities": "Activities",
     "profile": "Profile"
@@ -85,7 +86,7 @@
     }
   },
   "Auth": {
-    "brandName": "AutoInspect",
+    "brandName": "Check My Car",
     "pageTitle": "Welcome back",
     "pageDescription": "Sign in to manage your vehicle inspections.",
     "roleLabel": "I am a…",
