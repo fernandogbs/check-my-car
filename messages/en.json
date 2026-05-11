@@ -1,0 +1,56 @@
+{
+  "HomePage": {
+    "title": "Check My Car",
+    "subtitle": "Home",
+    "deployCta": "Deploy Now",
+    "docsCta": "Documentation"
+  },
+  "Auth": {
+    "brandName": "AutoInspect",
+    "pageTitle": "Welcome back",
+    "pageDescription": "Sign in to manage your vehicle inspections.",
+    "roleLabel": "I am a…",
+    "roleBuyer": "Buyer",
+    "roleInspector": "Inspector",
+    "email": "Email Address",
+    "emailPlaceholder": "name@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "··········",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "forgotPassword": "Forgot?",
+    "signIn": "Sign In",
+    "signInWithGoogleAria": "Sign in with Google",
+    "signInWithAppleAria": "Sign in with Apple",
+    "signInWithAppleSoon": "Apple sign-in is not available yet.",
+    "signInWithGoogle": "Continue with Google",
+    "orContinueWith": "Or continue with",
+    "noAccountPrompt": "Don't have an account?",
+    "createAccount": "Create account",
+    "backToSignIn": "Back to sign in",
+    "validation": {
+      "emailInvalid": "Enter a valid email address.",
+      "passwordRequired": "Password is required."
+    },
+    "errors": {
+      "generic": "Could not sign you in. Try again.",
+      "invalidCredentials": "Invalid email or password.",
+      "oauthRedirect": "Could not start Google sign-in.",
+      "oauthNotConfigured": "Google sign-in is not configured.",
+      "oauthCallback": "Could not finish sign-in. Try again."
+    },
+    "ForgotPage": {
+      "title": "Reset password",
+      "body": "This flow is coming soon. Contact support if you need help."
+    },
+    "RegisterPage": {
+      "title": "Create account",
+      "body": "Registration is coming soon.",
+      "backToLogin": "Back to sign in"
+    }
+  },
+  "Metadata": {
+    "title": "Check My Car",
+    "description": "Manage and track your vehicle"
+  }
+}

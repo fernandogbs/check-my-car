@@ -1,0 +1,56 @@
+{
+  "HomePage": {
+    "title": "Check My Car",
+    "subtitle": "Painel principal",
+    "deployCta": "Publicar agora",
+    "docsCta": "Documentação"
+  },
+  "Auth": {
+    "brandName": "AutoInspect",
+    "pageTitle": "Bem-vindo de volta",
+    "pageDescription": "Entre para gerenciar as inspeções do seu veículo.",
+    "roleLabel": "Eu sou…",
+    "roleBuyer": "Comprador",
+    "roleInspector": "Inspetor",
+    "email": "Endereço de e-mail",
+    "emailPlaceholder": "nome@exemplo.com",
+    "password": "Senha",
+    "passwordPlaceholder": "··········",
+    "showPassword": "Mostrar senha",
+    "hidePassword": "Ocultar senha",
+    "forgotPassword": "Esqueceu?",
+    "signIn": "Entrar",
+    "signInWithGoogleAria": "Entrar com Google",
+    "signInWithAppleAria": "Entrar com Apple",
+    "signInWithAppleSoon": "Login com Apple ainda não está disponível.",
+    "signInWithGoogle": "Continuar com Google",
+    "orContinueWith": "Ou continue com",
+    "noAccountPrompt": "Não tem uma conta?",
+    "createAccount": "Criar conta",
+    "backToSignIn": "Voltar ao login",
+    "validation": {
+      "emailInvalid": "Informe um e-mail válido.",
+      "passwordRequired": "Informe a senha."
+    },
+    "errors": {
+      "generic": "Não foi possível entrar. Tente novamente.",
+      "invalidCredentials": "E-mail ou senha incorretos.",
+      "oauthRedirect": "Não foi possível iniciar o login com Google.",
+      "oauthNotConfigured": "Login com Google não está configurado.",
+      "oauthCallback": "Não foi possível concluir o login. Tente novamente."
+    },
+    "ForgotPage": {
+      "title": "Recuperar senha",
+      "body": "Este fluxo está em breve. Entre em contato com o suporte se precisar de ajuda."
+    },
+    "RegisterPage": {
+      "title": "Criar conta",
+      "body": "O cadastro estará disponível em breve.",
+      "backToLogin": "Voltar ao login"
+    }
+  },
+  "Metadata": {
+    "title": "Check My Car",
+    "description": "Gestão e acompanhamento do seu veículo"
+  }
+}
