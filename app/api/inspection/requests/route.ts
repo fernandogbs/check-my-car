@@ -48,8 +48,12 @@ export async function POST(request: Request) {
     .insert({
       created_by: user.id,
       vehicle_plate: parsed.data.vehicle_plate,
-      vehicle_model: parsed.data.vehicle_model ?? null,
+      vehicle_year: parsed.data.vehicle_year,
+      vehicle_model: parsed.data.vehicle_model,
+      inspection_type: parsed.data.inspection_type,
+      inspection_location: parsed.data.inspection_location,
       notes: parsed.data.notes ?? null,
+      client_document_path: parsed.data.client_document_path ?? null,
       status: parsed.data.status,
     })
     .select('*')

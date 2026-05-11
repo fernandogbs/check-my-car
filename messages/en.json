@@ -5,6 +5,85 @@
     "deployCta": "Deploy Now",
     "docsCta": "Documentation"
   },
+  "Nav": {
+    "dashboard": "Dashboard",
+    "explore": "Explore",
+    "activities": "Activities",
+    "profile": "Profile"
+  },
+  "InspectionRequest": {
+    "title": "New Request",
+    "subtitle": "Fill in the details below to start a new vehicle inspection.",
+    "stepper": {
+      "vehicle": "Vehicle",
+      "market": "Market",
+      "additional": "Additional"
+    },
+    "vehicle": {
+      "title": "Vehicle Data",
+      "plate": {
+        "label": "License Plate",
+        "placeholder": "ABC-1234"
+      },
+      "year": {
+        "label": "Manufacture/Model Year",
+        "placeholder": "2023/2024"
+      },
+      "makeModel": {
+        "label": "Make and Model",
+        "placeholder": "Ex: Toyota Corolla Cross XRE"
+      }
+    },
+    "market": {
+      "title": "Market and Purpose",
+      "type": {
+        "label": "Inspection Type",
+        "cautelar": "Pre-purchase",
+        "transferencia": "Transfer"
+      },
+      "location": {
+        "label": "Inspection Location",
+        "placeholder": "Type the address or shop name"
+      }
+    },
+    "additional": {
+      "title": "Additional Details",
+      "notes": {
+        "label": "Requester Notes",
+        "placeholder": "Any specific detail the inspector should check?"
+      },
+      "document": {
+        "title": "Attach Document",
+        "subtitle": "PDF or JPG up to 10MB",
+        "cta": "Choose",
+        "change": "Change",
+        "remove": "Remove attachment",
+        "selected": "Ready to upload"
+      }
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "back": "Back",
+      "next": "Next Step",
+      "submit": "Submit Request",
+      "submitting": "Submitting…"
+    },
+    "validation": {
+      "plateRequired": "Enter the license plate.",
+      "yearRequired": "Enter the manufacture/model year.",
+      "makeModelRequired": "Enter the make and model.",
+      "typeRequired": "Select the inspection type.",
+      "locationRequired": "Enter the inspection location.",
+      "notesTooLong": "Notes must be at most 4000 characters."
+    },
+    "errors": {
+      "generic": "Could not create the request. Try again.",
+      "unauthorized": "Your session expired. Sign in again.",
+      "fileTooLarge": "File exceeds the 10MB limit.",
+      "fileType": "Only PDF or JPG are accepted.",
+      "uploadFailed": "Could not upload the attachment. Try again."
+    }
+  },
   "Auth": {
     "brandName": "AutoInspect",
     "pageTitle": "Welcome back",

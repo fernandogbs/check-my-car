@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { routing, type Locale } from '@/i18n/routing'
+import type { Database } from '@/lib/supabase/database.types'
 
 const PUBLIC_AUTH_SEGMENTS = new Set([
   'login',
@@ -51,7 +52,7 @@ export async function updateSession(
 ): Promise<NextResponse> {
   const supabaseResponse = response
 
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {

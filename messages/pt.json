@@ -5,6 +5,85 @@
     "deployCta": "Publicar agora",
     "docsCta": "Documentação"
   },
+  "Nav": {
+    "dashboard": "Dashboard",
+    "explore": "Explore",
+    "activities": "Activities",
+    "profile": "Profile"
+  },
+  "InspectionRequest": {
+    "title": "Nova Solicitação",
+    "subtitle": "Preencha os detalhes abaixo para iniciar sua nova inspeção veicular.",
+    "stepper": {
+      "vehicle": "Veículo",
+      "market": "Mercado",
+      "additional": "Adicional"
+    },
+    "vehicle": {
+      "title": "Dados do Veículo",
+      "plate": {
+        "label": "Placa do Veículo",
+        "placeholder": "ABC-1234"
+      },
+      "year": {
+        "label": "Ano Fabricação/Modelo",
+        "placeholder": "2023/2024"
+      },
+      "makeModel": {
+        "label": "Marca e Modelo",
+        "placeholder": "Ex: Toyota Corolla Cross XRE"
+      }
+    },
+    "market": {
+      "title": "Mercado e Finalidade",
+      "type": {
+        "label": "Tipo de Inspeção",
+        "cautelar": "Cautelar",
+        "transferencia": "Transferência"
+      },
+      "location": {
+        "label": "Local da Vistoria",
+        "placeholder": "Digite o endereço ou nome da loja"
+      }
+    },
+    "additional": {
+      "title": "Detalhes Adicionais",
+      "notes": {
+        "label": "Observações do Solicitante",
+        "placeholder": "Algum detalhe específico que o inspetor deve observar?"
+      },
+      "document": {
+        "title": "Anexar Documento",
+        "subtitle": "PDF ou JPG até 10MB",
+        "cta": "Escolher",
+        "change": "Trocar",
+        "remove": "Remover anexo",
+        "selected": "Pronto para envio"
+      }
+    },
+    "actions": {
+      "cancel": "Cancelar",
+      "back": "Voltar",
+      "next": "Próximo Passo",
+      "submit": "Enviar Solicitação",
+      "submitting": "Enviando…"
+    },
+    "validation": {
+      "plateRequired": "Informe a placa do veículo.",
+      "yearRequired": "Informe o ano de fabricação/modelo.",
+      "makeModelRequired": "Informe a marca e o modelo.",
+      "typeRequired": "Selecione o tipo de inspeção.",
+      "locationRequired": "Informe o local da vistoria.",
+      "notesTooLong": "Observações devem ter no máximo 4000 caracteres."
+    },
+    "errors": {
+      "generic": "Não foi possível criar a solicitação. Tente novamente.",
+      "unauthorized": "Sua sessão expirou. Entre novamente.",
+      "fileTooLarge": "Arquivo excede o limite de 10MB.",
+      "fileType": "Apenas PDF ou JPG são aceitos.",
+      "uploadFailed": "Falha ao enviar o anexo. Tente novamente."
+    }
+  },
   "Auth": {
     "brandName": "AutoInspect",
     "pageTitle": "Bem-vindo de volta",
