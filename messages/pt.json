@@ -108,6 +108,8 @@
     "noAccountPrompt": "Não tem uma conta?",
     "createAccount": "Criar conta",
     "backToSignIn": "Voltar ao login",
+    "signOut": "Sair",
+    "accountType": "Tipo de conta",
     "validation": {
       "emailInvalid": "Informe um e-mail válido.",
       "passwordRequired": "Informe a senha."
@@ -127,6 +129,30 @@
       "title": "Criar conta",
       "body": "O cadastro estará disponível em breve.",
       "backToLogin": "Voltar ao login"
+    },
+    "RegisterForm": {
+      "title": "Criar sua conta",
+      "description": "Preencha seus dados para começar a gerenciar inspeções.",
+      "name": "Nome completo",
+      "namePlaceholder": "Seu nome",
+      "phone": "Telefone (opcional)",
+      "phonePlaceholder": "(11) 90000-0000",
+      "confirmPassword": "Confirmar senha",
+      "confirmPasswordPlaceholder": "Repita a senha",
+      "signUp": "Criar conta",
+      "creating": "Criando…",
+      "haveAccountPrompt": "Já tem uma conta?",
+      "signInLink": "Entrar",
+      "validation": {
+        "nameRequired": "Informe seu nome.",
+        "emailInvalid": "Informe um e-mail válido.",
+        "passwordTooShort": "A senha deve ter no mínimo 8 caracteres.",
+        "passwordsMismatch": "As senhas não coincidem."
+      },
+      "errors": {
+        "emailTaken": "Este e-mail já está cadastrado.",
+        "generic": "Não foi possível criar a conta. Tente novamente."
+      }
     }
   },
   "BuyerDashboard": {

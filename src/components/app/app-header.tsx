@@ -1,7 +1,7 @@
 import { Bell, Car } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
-import { createClient } from '@/lib/supabase/server'
+import { getCurrentUser } from '@/lib/auth/current-user'
 import { cn } from '@/lib/utils'
 
 function getInitials(value: string | undefined | null): string {
@@ -20,17 +20,10 @@ function getInitials(value: string | undefined | null): string {
 }
 
 export async function AppHeader() {
-  const supabase = await createClient()
-  const { data } = await supabase.auth.getUser()
+  const user = await getCurrentUser()
   const t = await getTranslations('Auth')
 
-  const user = data.user
-  const displayName =
-    (user?.user_metadata?.full_name as string | undefined) ??
-    (user?.user_metadata?.name as string | undefined) ??
-    user?.email ??
-    null
-  const avatarUrl = user?.user_metadata?.avatar_url as string | undefined
+  const displayName = user?.nome ?? user?.email ?? null
 
   return (
     <header className="sticky top-0 z-30 border-b border-black/[0.045] bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
@@ -65,16 +58,7 @@ export async function AppHeader() {
               'sm:size-10'
             )}
           >
-            {avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                alt=""
-                className="size-full object-cover"
-                src={avatarUrl}
-              />
-            ) : (
-              <span>{getInitials(displayName)}</span>
-            )}
+            <span>{getInitials(displayName)}</span>
           </div>
         </div>
       </div>

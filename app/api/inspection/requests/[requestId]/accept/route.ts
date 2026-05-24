@@ -1,15 +1,16 @@
 import { requestIdParamSchema } from '@/lib/api/inspection-schemas'
 import { jsonError, jsonOk } from '@/lib/api/json-response'
-import { requireSupabaseUser } from '@/lib/api/supabase-session'
+import { requireUser } from '@/lib/api/supabase-session'
 
 type RouteContext = { params: Promise<{ requestId: string }> }
 
 /**
- * Aceita uma demanda pendente via RPC `accept_inspection_request` (transação atómica + RLS-safe).
+ * Aceita uma demanda pendente via UPDATE atômico condicional (admin client).
+ * Mirrors old RPC contract: 409 if not pending / already assigned.
  * @see supabase/API.md — Aceite de demanda
  */
 export async function POST(_request: Request, context: RouteContext) {
-  const session = await requireSupabaseUser()
+  const session = await requireUser()
   if (!session.ok) {
     return session.response
   }
@@ -20,14 +21,27 @@ export async function POST(_request: Request, context: RouteContext) {
     return jsonError(400, 'validation_error', idParsed.error.message)
   }
 
-  const { supabase } = session
-  const { data, error } = await supabase.rpc('accept_inspection_request', {
-    request_id: idParsed.data.requestId,
-  })
+  const { user, admin } = session
+  const { data, error } = await admin
+    .from('inspection_requests')
+    .update({
+      accepted_by: user.id,
+      accepted_at: new Date().toISOString(),
+      status: 'accepted',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', idParsed.data.requestId)
+    .eq('status', 'pending')
+    .is('accepted_by', null)
+    .select('*')
+    .maybeSingle()
 
   if (error) {
-    const code = error.code === 'P0001' ? 409 : 400
-    return jsonError(code, 'accept_failed', error.message)
+    return jsonError(400, 'accept_failed', error.message)
+  }
+
+  if (!data) {
+    return jsonError(409, 'accept_failed', 'inspection request is not pending or already assigned')
   }
 
   return jsonOk({ data })

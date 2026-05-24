@@ -1,21 +1,37 @@
-import { requireSupabaseUser } from '@/lib/api/supabase-session'
-import { jsonOk } from '@/lib/api/json-response'
+import { requireUser } from '@/lib/api/supabase-session'
+import { jsonError, jsonOk } from '@/lib/api/json-response'
 
 /**
- * Retorna o utilizador autenticado (JWT + `auth.users`) para a sessão atual.
+ * Retorna o utilizador autenticado (sessão própria + `public.users`) para a sessão atual.
  * @see supabase/API.md — Autenticação
  */
 export async function GET() {
-  const session = await requireSupabaseUser()
+  const session = await requireUser()
   if (!session.ok) {
     return session.response
   }
 
-  const { user } = session
+  const { user, admin } = session
+  const { data, error } = await admin
+    .from('users')
+    .select('id, email, nome, tipo_usuario, telefone, created_at')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  if (error) {
+    return jsonError(500, 'database_error', error.message)
+  }
+
+  if (!data) {
+    return jsonError(404, 'not_found', 'User not found.')
+  }
+
   return jsonOk({
-    id: user.id,
-    email: user.email,
-    app_metadata: user.app_metadata,
-    created_at: user.created_at,
+    id: data.id,
+    email: data.email,
+    nome: data.nome,
+    tipo_usuario: data.tipo_usuario,
+    telefone: data.telefone,
+    created_at: data.created_at,
   })
 }

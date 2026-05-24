@@ -4,16 +4,17 @@ import {
 } from '@/lib/api/inspection-schemas'
 import { jsonError, jsonOk } from '@/lib/api/json-response'
 import { readJsonBody } from '@/lib/api/request-json'
-import { requireSupabaseUser } from '@/lib/api/supabase-session'
+import { requireUser } from '@/lib/api/supabase-session'
 
 type RouteContext = { params: Promise<{ requestId: string }> }
 
 /**
  * Regista o caminho do laudo no Storage (upload deve ser feito antes, p.ex. URL assinada).
+ * Only the acceptor (accepted_by === user.id) may submit; 403 otherwise; 400 if not yet accepted.
  * @see supabase/API.md — Envio de laudo
  */
 export async function POST(request: Request, context: RouteContext) {
-  const session = await requireSupabaseUser()
+  const session = await requireUser()
   if (!session.ok) {
     return session.response
   }
@@ -30,10 +31,10 @@ export async function POST(request: Request, context: RouteContext) {
     return jsonError(400, 'validation_error', body.error.message)
   }
 
-  const { supabase, user } = session
+  const { user, admin } = session
   const requestId = idParsed.data.requestId
 
-  const { data: current, error: loadError } = await supabase
+  const { data: current, error: loadError } = await admin
     .from('inspection_requests')
     .select('status, accepted_by')
     .eq('id', requestId)
@@ -58,7 +59,7 @@ export async function POST(request: Request, context: RouteContext) {
 
   const submittedAt = new Date().toISOString()
 
-  const { data, error } = await supabase
+  const { data, error } = await admin
     .from('inspection_requests')
     .update({
       report_storage_path: body.data.report_storage_path,

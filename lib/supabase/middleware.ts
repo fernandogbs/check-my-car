@@ -1,11 +1,9 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { routing, type Locale } from '@/i18n/routing'
-import type { Database } from '@/lib/supabase/database.types'
+import { verifySession, SESSION_COOKIE } from '@/lib/auth/session'
 
 const PUBLIC_AUTH_SEGMENTS = new Set([
   'login',
-  'callback',
   'register',
   'forgot',
 ])
@@ -26,10 +24,6 @@ function isLocalePublicAuthPath(pathname: string): boolean {
     return false
   }
 
-  if (rest[1] === 'callback') {
-    return rest.length >= 2
-  }
-
   return rest.length === 2
 }
 
@@ -43,42 +37,19 @@ function shouldEnforceAuth(pathname: string): boolean {
 }
 
 /**
- * Refresh session cookies on `response` (typically from next-intl).
+ * Validates custom session cookie and gates locale routes.
  * Only redirects anonymous users away from **`/{locale}/...`** routes (not `/`).
  */
 export async function updateSession(
   request: NextRequest,
   response: NextResponse
 ): Promise<NextResponse> {
-  const supabaseResponse = response
-
-  const supabase = createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          )
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
-        },
-      },
-    }
-  )
-
-  const { data } = await supabase.auth.getClaims()
-  const user = data?.claims
+  const claims = await verifySession(request.cookies.get(SESSION_COOKIE)?.value)
   const pathname = request.nextUrl.pathname
 
   if (
     shouldEnforceAuth(pathname) &&
-    !user &&
+    !claims &&
     !isLocalePublicAuthPath(pathname)
   ) {
     const segments = pathname.split('/').filter(Boolean)
@@ -89,11 +60,11 @@ export async function updateSession(
     const url = request.nextUrl.clone()
     url.pathname = `/${locale}/auth/login`
     const redirectResponse = NextResponse.redirect(url)
-    for (const cookie of supabaseResponse.cookies.getAll()) {
+    for (const cookie of response.cookies.getAll()) {
       redirectResponse.cookies.set(cookie.name, cookie.value)
     }
     return redirectResponse
   }
 
-  return supabaseResponse
+  return response
 }

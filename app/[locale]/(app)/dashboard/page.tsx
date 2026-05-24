@@ -1,8 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import { BuyerDashboard } from '@/domain/inspection-requests/presentation/buyer-dashboard'
-import { getAppNavRole } from '@/lib/app/app-nav-role'
-import { createClient } from '@/lib/supabase/server'
+import { getCurrentUser } from '@/lib/auth/current-user'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 type DashboardPageProps = {
   params: Promise<{ locale: string }>
@@ -11,7 +11,9 @@ type DashboardPageProps = {
 export default async function DashboardPage({ params }: DashboardPageProps) {
   const { locale } = await params
   setRequestLocale(locale)
-  const navRole = await getAppNavRole()
+
+  const user = await getCurrentUser()
+  const navRole = user?.navRole ?? 'buyer'
 
   if (navRole === 'inspector') {
     const t = await getTranslations('Nav')
@@ -24,10 +26,6 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     )
   }
 
-  const supabase = await createClient()
-  const { data: authData } = await supabase.auth.getUser()
-  const user = authData.user
-
   if (!user) {
     const t = await getTranslations('Nav')
     return (
@@ -39,13 +37,10 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     )
   }
 
-  const displayName =
-    (user.user_metadata?.full_name as string | undefined) ??
-    (user.user_metadata?.name as string | undefined) ??
-    user.email ??
-    null
+  const displayName = user.nome
 
-  const { data: rows, error } = await supabase
+  const admin = createAdminClient()
+  const { data: rows, error } = await admin
     .from('inspection_requests')
     .select('*')
     .eq('created_by', user.id)

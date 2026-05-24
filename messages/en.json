@@ -108,6 +108,8 @@
     "noAccountPrompt": "Don't have an account?",
     "createAccount": "Create account",
     "backToSignIn": "Back to sign in",
+    "signOut": "Sign out",
+    "accountType": "Account type",
     "validation": {
       "emailInvalid": "Enter a valid email address.",
       "passwordRequired": "Password is required."
@@ -127,6 +129,30 @@
       "title": "Create account",
       "body": "Registration is coming soon.",
       "backToLogin": "Back to sign in"
+    },
+    "RegisterForm": {
+      "title": "Create your account",
+      "description": "Fill in your details to start managing inspections.",
+      "name": "Full name",
+      "namePlaceholder": "Your name",
+      "phone": "Phone (optional)",
+      "phonePlaceholder": "+1 (555) 000-0000",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Repeat your password",
+      "signUp": "Create account",
+      "creating": "Creating…",
+      "haveAccountPrompt": "Already have an account?",
+      "signInLink": "Sign in",
+      "validation": {
+        "nameRequired": "Please enter your name.",
+        "emailInvalid": "Enter a valid email address.",
+        "passwordTooShort": "Password must be at least 8 characters.",
+        "passwordsMismatch": "Passwords do not match."
+      },
+      "errors": {
+        "emailTaken": "This email is already registered.",
+        "generic": "Could not create the account. Try again."
+      }
     }
   },
   "BuyerDashboard": {

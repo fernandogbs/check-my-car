@@ -1,9 +1,13 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { verifyPassword } from '@/lib/auth/password'
+import { setSessionCookie } from '@/lib/auth/current-user'
 import type { AuthActionState } from '../model/auth-action-state'
 import { loginCredentialsSchema } from '../model/login-credentials-schema'
+
+const DUMMY_HASH = '$2a$10$CwTycUXWue0Thq9StjUM0uJ8DvKQ6Df0iLk0ExQ4z1u3qXyz1abc'
 
 export async function signInWithEmailPassword(
   _prev: AuthActionState,
@@ -34,15 +38,20 @@ export async function signInWithEmailPassword(
     return { ok: false, code: 'validation', fieldErrors }
   }
 
-  const supabase = await createClient()
-  const { error } = await supabase.auth.signInWithPassword({
-    email: parsed.data.email,
-    password: parsed.data.password,
-  })
+  const admin = createAdminClient()
+  const { data: user } = await admin
+    .from('users')
+    .select('id, senha, tipo_usuario')
+    .ilike('email', parsed.data.email)
+    .maybeSingle()
 
-  if (error) {
+  const valid = await verifyPassword(parsed.data.password, user?.senha ?? DUMMY_HASH)
+
+  if (!user || !valid) {
     return { ok: false, code: 'invalidCredentials' }
   }
+
+  await setSessionCookie({ sub: user.id, role: user.tipo_usuario })
 
   redirect(`/${locale}/dashboard`)
 }

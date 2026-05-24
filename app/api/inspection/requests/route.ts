@@ -1,22 +1,26 @@
 import { createInspectionRequestSchema } from '@/lib/api/inspection-schemas'
 import { jsonError, jsonOk } from '@/lib/api/json-response'
 import { readJsonBody } from '@/lib/api/request-json'
-import { requireSupabaseUser } from '@/lib/api/supabase-session'
+import { requireUser } from '@/lib/api/supabase-session'
 
 /**
- * Lista solicitações visíveis ao utilizador (RLS: próprias, aceites, ou pendentes na fila).
+ * Lista solicitações visíveis ao utilizador: próprias, aceites, ou pendentes na fila.
+ * Ownership enforced in code (admin client bypasses RLS).
  * @see supabase/API.md — Criação e listagem
  */
 export async function GET() {
-  const session = await requireSupabaseUser()
+  const session = await requireUser()
   if (!session.ok) {
     return session.response
   }
 
-  const { supabase } = session
-  const { data, error } = await supabase
+  const { user, admin } = session
+  const id = user.id
+
+  const { data, error } = await admin
     .from('inspection_requests')
     .select('*')
+    .or(`created_by.eq.${id},accepted_by.eq.${id},and(status.eq.pending,accepted_by.is.null)`)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -31,7 +35,7 @@ export async function GET() {
  * @see supabase/API.md — Criação de solicitações
  */
 export async function POST(request: Request) {
-  const session = await requireSupabaseUser()
+  const session = await requireUser()
   if (!session.ok) {
     return session.response
   }
@@ -42,8 +46,8 @@ export async function POST(request: Request) {
     return jsonError(400, 'validation_error', parsed.error.message)
   }
 
-  const { supabase, user } = session
-  const { data, error } = await supabase
+  const { user, admin } = session
+  const { data, error } = await admin
     .from('inspection_requests')
     .insert({
       created_by: user.id,

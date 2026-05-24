@@ -7,52 +7,17 @@ import {
   EyeOff,
   Lock,
   Mail,
-  UserCog,
-  UserRound,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
 import { signInWithEmailPassword } from '../application/sign-in-email-password-action'
-import { signInWithGoogle } from '../application/sign-in-google-action'
 import {
   type AuthActionState,
   initialAuthActionState,
 } from '../model/auth-action-state'
-
-function GoogleGlyph({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden
-      className={className}
-      role="img"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-        fill="#4285F4"
-      />
-      <path
-        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-        fill="#34A853"
-      />
-      <path
-        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-        fill="#FBBC05"
-      />
-      <path
-        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-        fill="#EA4335"
-      />
-    </svg>
-  )
-}
-
-type LoginRole = 'buyer' | 'inspector'
 
 type LoginFormProps = {
   locale: string
@@ -61,7 +26,6 @@ type LoginFormProps = {
 
 export function LoginForm({ locale, urlError }: LoginFormProps) {
   const t = useTranslations('Auth')
-  const [role, setRole] = useState<LoginRole>('buyer')
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [state, emailFormAction, emailPending] = useActionState<
     AuthActionState,
@@ -117,54 +81,8 @@ export function LoginForm({ locale, urlError }: LoginFormProps) {
             </p>
           ) : null}
 
-          <fieldset className="m-0 min-w-0 space-y-2.5 border-0 p-0">
-            <legend className="text-[0.9375rem] font-medium text-[#2c3f5c]">
-              {t('roleLabel')}
-            </legend>
-            <div className="grid grid-cols-2 gap-3">
-              {(
-                [
-                  { id: 'buyer' as const, label: 'roleBuyer', Icon: UserRound },
-                  {
-                    id: 'inspector' as const,
-                    label: 'roleInspector',
-                    Icon: UserCog,
-                  },
-                ] as const
-              ).map(({ id, label, Icon }) => (
-                <button
-                  key={id}
-                  type="button"
-                  aria-pressed={role === id}
-                  onClick={() => {
-                    setRole(id)
-                  }}
-                  className={cn(
-                    'flex cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-transparent px-4 py-4 text-sm font-semibold transition-[background-color,color,transform,box-shadow,border-color] outline-none select-none hover:brightness-[1.03] active:translate-y-[0.02rem] active:brightness-[0.98] sm:rounded-2xl sm:py-5',
-                    role === id
-                      ? 'border-brand-auth/85 bg-brand-auth text-brand-auth-foreground shadow-[0_14px_32px_-16px_rgb(37_112_216_/_75%)]'
-                      : 'bg-brand-auth-soft/75 text-brand-auth-soft-foreground'
-                  )}
-                >
-                  <Icon
-                    aria-hidden
-                    className={cn(
-                      'size-[1.4rem]',
-                      role === id
-                        ? 'text-brand-auth-foreground'
-                        : 'text-brand-auth-muted'
-                    )}
-                    strokeWidth={2}
-                  />
-                  {t(label)}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-
           <form action={emailFormAction} className="space-y-5">
             <input name="locale" type="hidden" value={locale} />
-            <input name="role" type="hidden" value={role} />
 
             <div className="space-y-2">
               <Label
@@ -269,40 +187,6 @@ export function LoginForm({ locale, urlError }: LoginFormProps) {
               {t('signIn')}
             </Button>
           </form>
-
-          {/* TODO: Add supabase Google and Apple sign in */}
-          {/* <div className="relative pt-2">
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-brand-auth-soft" />
-            <p className="relative mx-auto w-max bg-card px-3 text-center text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-brand-auth-muted">
-              {t('orContinueWith')}
-            </p>
-          </div>
-
-          <div className="flex items-center justify-center gap-7 pt-2">
-            <form action={signInWithGoogle} className="contents">
-              <input name="locale" type="hidden" value={locale} />
-              <Button
-                aria-label={t('signInWithGoogleAria')}
-                className="relative size-[3.5rem] shrink-0 rounded-full border-[1.5px] border-transparent bg-brand-auth-soft/95 p-0 text-[#4285f4] shadow-inner shadow-white/30 transition-[border-color,box-shadow] hover:border-brand-auth/20 hover:bg-white active:translate-y-[0.06rem]"
-                size="icon-lg"
-                type="submit"
-                variant="outline"
-              >
-                <GoogleGlyph className="size-[1.35rem]" />
-              </Button>
-            </form>
-            <button
-              aria-label={t('signInWithAppleAria')}
-              disabled
-              className="relative flex size-[3.5rem] shrink-0 cursor-not-allowed items-center justify-center rounded-full border-[1.5px] border-black/[0.06] bg-brand-auth-soft/90 text-[#172339]/90 backdrop-blur-sm"
-              title={t('signInWithAppleSoon')}
-              type="button"
-            >
-              <span className="text-[0.65rem] font-bold leading-none tracking-[0.14em]">
-                iOS
-              </span>
-            </button>
-          </div> */}
         </div>
       </div>
 

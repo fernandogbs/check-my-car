@@ -1,19 +1,14 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { getSessionClaims } from '@/lib/auth/current-user'
 import { jsonError } from '@/lib/api/json-response'
 
-export async function requireSupabaseUser() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser()
-
-  if (error || !user) {
+export async function requireUser() {
+  const claims = await getSessionClaims()
+  if (!claims) {
     return {
       ok: false as const,
       response: jsonError(401, 'unauthorized', 'Missing or invalid session.'),
     }
   }
-
-  return { ok: true as const, supabase, user }
+  return { ok: true as const, user: { id: claims.sub, role: claims.role }, admin: createAdminClient() }
 }

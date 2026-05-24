@@ -1,15 +1,16 @@
 import { requestIdParamSchema } from '@/lib/api/inspection-schemas'
 import { jsonError, jsonOk } from '@/lib/api/json-response'
-import { requireSupabaseUser } from '@/lib/api/supabase-session'
+import { requireUser } from '@/lib/api/supabase-session'
 
 type RouteContext = { params: Promise<{ requestId: string }> }
 
 /**
- * Detalhe de uma solicitação (sujeito a RLS).
+ * Detalhe de uma solicitação.
+ * Visibility enforced in code: creator OR acceptor OR (pending & unassigned).
  * @see supabase/API.md
  */
 export async function GET(_request: Request, context: RouteContext) {
-  const session = await requireSupabaseUser()
+  const session = await requireUser()
   if (!session.ok) {
     return session.response
   }
@@ -20,8 +21,8 @@ export async function GET(_request: Request, context: RouteContext) {
     return jsonError(400, 'validation_error', idParsed.error.message)
   }
 
-  const { supabase } = session
-  const { data, error } = await supabase
+  const { user, admin } = session
+  const { data, error } = await admin
     .from('inspection_requests')
     .select('*')
     .eq('id', idParsed.data.requestId)
@@ -32,6 +33,16 @@ export async function GET(_request: Request, context: RouteContext) {
   }
 
   if (!data) {
+    return jsonError(404, 'not_found', 'Inspection request not found.')
+  }
+
+  const id = user.id
+  const visible =
+    data.created_by === id ||
+    data.accepted_by === id ||
+    (data.status === 'pending' && data.accepted_by === null)
+
+  if (!visible) {
     return jsonError(404, 'not_found', 'Inspection request not found.')
   }
 
