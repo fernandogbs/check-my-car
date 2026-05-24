@@ -7,9 +7,10 @@
   },
   "Nav": {
     "dashboard": "Dashboard",
-    "explore": "Explore",
-    "activities": "Activities",
-    "profile": "Profile"
+    "newRequest": "Nova solicitação",
+    "explore": "Explorar",
+    "activities": "Atividades",
+    "profile": "Perfil"
   },
   "InspectionRequest": {
     "title": "Nova Solicitação",
@@ -85,7 +86,7 @@
     }
   },
   "Auth": {
-    "brandName": "AutoInspect",
+    "brandName": "Check My Car",
     "pageTitle": "Bem-vindo de volta",
     "pageDescription": "Entre para gerenciar as inspeções do seu veículo.",
     "roleLabel": "Eu sou…",
@@ -126,6 +127,41 @@
       "title": "Criar conta",
       "body": "O cadastro estará disponível em breve.",
       "backToLogin": "Voltar ao login"
+    }
+  },
+  "BuyerDashboard": {
+    "welcomeWithName": "Bem-vindo de volta, {name}",
+    "welcomeGeneric": "Bem-vindo de volta",
+    "subtitle": "Gerencie suas vistorias veiculares e acompanhe cada status.",
+    "sectionRequests": "Suas inspeções",
+    "empty": "Você ainda não tem solicitações de vistoria. Comece em Nova solicitação.",
+    "metrics": {
+      "total": "Total",
+      "active": "Em andamento",
+      "completed": "Concluídas"
+    },
+    "updated": "Atualizado {time}",
+    "ctaDetails": "Detalhes",
+    "ctaReport": "Ver laudo",
+    "detail": {
+      "title": "Solicitação de vistoria",
+      "back": "Voltar ao painel",
+      "plate": "Placa",
+      "year": "Ano",
+      "model": "Marca e modelo",
+      "location": "Local da vistoria",
+      "type": "Tipo de inspeção",
+      "created": "Solicitado em",
+      "updated": "Última atualização"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "pending": "Pendente",
+      "accepted": "Aceita",
+      "in_progress": "Em andamento",
+      "awaiting_report": "Aguardando laudo",
+      "completed": "Concluída",
+      "cancelled": "Cancelada"
     }
   },
   "Metadata": {

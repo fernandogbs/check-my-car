@@ -7,6 +7,7 @@
   },
   "Nav": {
     "dashboard": "Dashboard",
+    "newRequest": "New request",
     "explore": "Explore",
     "activities": "Activities",
     "profile": "Profile"
@@ -85,7 +86,7 @@
     }
   },
   "Auth": {
-    "brandName": "AutoInspect",
+    "brandName": "Check My Car",
     "pageTitle": "Welcome back",
     "pageDescription": "Sign in to manage your vehicle inspections.",
     "roleLabel": "I am a…",
@@ -126,6 +127,41 @@
       "title": "Create account",
       "body": "Registration is coming soon.",
       "backToLogin": "Back to sign in"
+    }
+  },
+  "BuyerDashboard": {
+    "welcomeWithName": "Welcome back, {name}",
+    "welcomeGeneric": "Welcome back",
+    "subtitle": "Manage your vehicle inspections and track each status.",
+    "sectionRequests": "Your inspections",
+    "empty": "You have no inspection requests yet. Start one from New request.",
+    "metrics": {
+      "total": "Total",
+      "active": "In progress",
+      "completed": "Completed"
+    },
+    "updated": "Updated {time}",
+    "ctaDetails": "Details",
+    "ctaReport": "View report",
+    "detail": {
+      "title": "Inspection request",
+      "back": "Back to dashboard",
+      "plate": "License plate",
+      "year": "Year",
+      "model": "Make and model",
+      "location": "Inspection location",
+      "type": "Inspection type",
+      "created": "Requested on",
+      "updated": "Last updated"
+    },
+    "status": {
+      "draft": "Draft",
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "in_progress": "In progress",
+      "awaiting_report": "Awaiting report",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
     }
   },
   "Metadata": {
