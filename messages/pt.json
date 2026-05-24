@@ -190,6 +190,38 @@
       "cancelled": "Cancelada"
     }
   },
+  "InspectorDashboard": {
+    "welcomeWithName": "Olá, {name}",
+    "welcomeGeneric": "Olá, inspetor",
+    "subtitle": "Acompanhe seus trabalhos e encontre novas inspeções disponíveis.",
+    "metrics": {
+      "accepted": "Aceitas",
+      "completed": "Concluídas",
+      "earnings": "Ganhos est."
+    },
+    "quickActions": "Acesso rápido",
+    "exploreTitle": "Explorar solicitações",
+    "exploreSubtitle": "Veja inspeções disponíveis para aceitar",
+    "activitiesTitle": "Minhas atividades",
+    "activitiesSubtitle": "Acompanhe inspeções aceitas e concluídas"
+  },
+  "InspectorActivities": {
+    "title": "Atividades",
+    "metrics": {
+      "accepted": "Aceitas",
+      "completed": "Concluídas",
+      "earnings": "Ganhos est."
+    },
+    "sectionActive": "Inspeção ativa",
+    "sectionScheduled": "Agendadas",
+    "viewHistory": "Ver histórico",
+    "emptyScheduled": "Nenhuma inspeção agendada no momento."
+  },
+  "InspectorExplore": {
+    "title": "Explorar",
+    "subtitle": "Solicitações disponíveis para você aceitar.",
+    "empty": "Não há solicitações pendentes no momento. Volte mais tarde."
+  },
   "Metadata": {
     "title": "Check My Car",
     "description": "Gestão e acompanhamento do seu veículo"

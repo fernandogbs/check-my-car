@@ -1,4 +1,8 @@
-import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { redirect } from 'next/navigation'
+import { setRequestLocale } from 'next-intl/server'
+
+import { InspectorActivities } from '@/domain/inspection-requests/presentation/inspector-activities'
+import { getCurrentUser } from '@/lib/auth/current-user'
 
 type ActivitiesPageProps = {
   params: Promise<{ locale: string }>
@@ -7,13 +11,12 @@ type ActivitiesPageProps = {
 export default async function ActivitiesPage({ params }: ActivitiesPageProps) {
   const { locale } = await params
   setRequestLocale(locale)
-  const t = await getTranslations('Nav')
 
-  return (
-    <div className="flex flex-1 flex-col">
-      <h1 className="text-xl font-semibold tracking-tight text-[#172339]">
-        {t('activities')}
-      </h1>
-    </div>
-  )
+  const user = await getCurrentUser()
+
+  if (!user || user.navRole !== 'inspector') {
+    redirect('/dashboard')
+  }
+
+  return <InspectorActivities userId={user.id} />
 }

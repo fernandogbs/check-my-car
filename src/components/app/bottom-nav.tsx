@@ -68,6 +68,12 @@ const inspectorItems: readonly NavItemConfig[] = [
     match: (path) => path.startsWith('/activities'),
     Icon: List,
   },
+  {
+    href: '/profile',
+    labelKey: 'profile',
+    match: (path) => path.startsWith('/profile'),
+    Icon: UserRound,
+  },
 ]
 
 type BottomNavProps = {

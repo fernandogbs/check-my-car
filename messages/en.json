@@ -190,6 +190,38 @@
       "cancelled": "Cancelled"
     }
   },
+  "InspectorDashboard": {
+    "welcomeWithName": "Hello, {name}",
+    "welcomeGeneric": "Hello, inspector",
+    "subtitle": "Track your jobs and find new available inspections.",
+    "metrics": {
+      "accepted": "Accepted",
+      "completed": "Completed",
+      "earnings": "Est. earnings"
+    },
+    "quickActions": "Quick access",
+    "exploreTitle": "Explore requests",
+    "exploreSubtitle": "See available inspections to accept",
+    "activitiesTitle": "My activities",
+    "activitiesSubtitle": "Track accepted and completed inspections"
+  },
+  "InspectorActivities": {
+    "title": "Activities",
+    "metrics": {
+      "accepted": "Accepted",
+      "completed": "Completed",
+      "earnings": "Est. earnings"
+    },
+    "sectionActive": "Active inspection",
+    "sectionScheduled": "Scheduled",
+    "viewHistory": "View History",
+    "emptyScheduled": "No inspections scheduled at this time."
+  },
+  "InspectorExplore": {
+    "title": "Explore",
+    "subtitle": "Requests available for you to accept.",
+    "empty": "No pending requests at the moment. Check back later."
+  },
   "Metadata": {
     "title": "Check My Car",
     "description": "Manage and track your vehicle"

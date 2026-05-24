@@ -1,5 +1,6 @@
-import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { setRequestLocale } from 'next-intl/server'
 
+import { InspectorDashboard } from '@/domain/inspection-requests/presentation/inspector-dashboard'
 import { BuyerDashboard } from '@/domain/inspection-requests/presentation/buyer-dashboard'
 import { getCurrentUser } from '@/lib/auth/current-user'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -13,31 +14,14 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   setRequestLocale(locale)
 
   const user = await getCurrentUser()
-  const navRole = user?.navRole ?? 'buyer'
-
-  if (navRole === 'inspector') {
-    const t = await getTranslations('Nav')
-    return (
-      <div className="flex flex-1 flex-col">
-        <h1 className="text-xl font-semibold tracking-tight text-[#172339]">
-          {t('dashboard')}
-        </h1>
-      </div>
-    )
-  }
 
   if (!user) {
-    const t = await getTranslations('Nav')
-    return (
-      <div className="flex flex-1 flex-col">
-        <h1 className="text-xl font-semibold tracking-tight text-[#172339]">
-          {t('dashboard')}
-        </h1>
-      </div>
-    )
+    return null
   }
 
-  const displayName = user.nome
+  if (user.navRole === 'inspector') {
+    return <InspectorDashboard displayName={user.nome} userId={user.id} />
+  }
 
   const admin = createAdminClient()
   const { data: rows, error } = await admin
@@ -50,5 +34,5 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     throw new Error(error.message)
   }
 
-  return <BuyerDashboard displayName={displayName} rows={rows ?? []} />
+  return <BuyerDashboard displayName={user.nome} rows={rows ?? []} />
 }

@@ -1,8 +1,13 @@
 import { notFound } from 'next/navigation'
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server'
 
+import {
+  acceptInspectionAction,
+  updateInspectionStatusAction,
+} from '@/domain/inspection-requests/application/inspector-actions'
 import { buyerDashboardStatusMessageKey } from '@/domain/inspection-requests/lib/buyer-dashboard-metrics'
 import { Link } from '@/i18n/navigation'
+import { getCurrentUser } from '@/lib/auth/current-user'
 import { createClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
 
@@ -27,6 +32,92 @@ function statusBadgeClass(status: string): string {
   }
 }
 
+function InspectorActions({
+  requestId,
+  status,
+  isAcceptor,
+}: {
+  requestId: string
+  status: string
+  isAcceptor: boolean
+}) {
+  if (status === 'pending') {
+    return (
+      <form
+        action={async () => {
+          'use server'
+          await acceptInspectionAction(requestId)
+        }}
+      >
+        <button
+          type="submit"
+          className="w-full rounded-xl bg-[#0055FF] py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+        >
+          Aceitar inspeção
+        </button>
+      </form>
+    )
+  }
+
+  if (!isAcceptor) return null
+
+  if (status === 'accepted') {
+    return (
+      <form
+        action={async () => {
+          'use server'
+          await updateInspectionStatusAction(requestId, 'in_progress')
+        }}
+      >
+        <button
+          type="submit"
+          className="w-full rounded-xl bg-[#0055FF] py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+        >
+          Iniciar inspeção
+        </button>
+      </form>
+    )
+  }
+
+  if (status === 'in_progress') {
+    return (
+      <form
+        action={async () => {
+          'use server'
+          await updateInspectionStatusAction(requestId, 'awaiting_report')
+        }}
+      >
+        <button
+          type="submit"
+          className="w-full rounded-xl bg-amber-500 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+        >
+          Marcar aguardando laudo
+        </button>
+      </form>
+    )
+  }
+
+  if (status === 'awaiting_report') {
+    return (
+      <form
+        action={async () => {
+          'use server'
+          await updateInspectionStatusAction(requestId, 'completed')
+        }}
+      >
+        <button
+          type="submit"
+          className="w-full rounded-xl bg-emerald-600 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+        >
+          Concluir inspeção
+        </button>
+      </form>
+    )
+  }
+
+  return null
+}
+
 type InspectionRequestDetailPageProps = {
   params: Promise<{ locale: string; requestId: string }>
 }
@@ -41,8 +132,12 @@ export default async function InspectionRequestDetailPage({
     notFound()
   }
 
-  const supabase = await createClient()
-  const { data: row, error } = await supabase
+  const [user, supabaseClient] = await Promise.all([
+    getCurrentUser(),
+    createClient(),
+  ])
+
+  const { data: row, error } = await supabaseClient
     .from('inspection_requests')
     .select('*')
     .eq('id', requestId)
@@ -59,14 +154,19 @@ export default async function InspectionRequestDetailPage({
   const created = new Date(row.created_at)
   const updated = new Date(row.updated_at)
 
+  const isInspector = user?.navRole === 'inspector'
+  const isAcceptor = isInspector && row.accepted_by === user?.id
+  const backHref = isInspector ? '/activities' : '/dashboard'
+  const backLabel = isInspector ? 'Voltar às atividades' : t('detail.back')
+
   return (
     <div className="flex flex-1 flex-col gap-6">
       <div className="flex flex-col gap-3">
         <Link
           className="text-sm font-medium text-brand-auth hover:underline"
-          href="/dashboard"
+          href={backHref}
         >
-          {t('detail.back')}
+          {backLabel}
         </Link>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <h1 className="text-xl font-semibold tracking-tight text-[#172339]">
@@ -116,6 +216,14 @@ export default async function InspectionRequestDetailPage({
           </dt>
           <dd className="mt-1 text-sm text-zinc-800">{row.inspection_location}</dd>
         </div>
+        {row.notes && (
+          <div>
+            <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+              Observações
+            </dt>
+            <dd className="mt-1 text-sm text-zinc-800">{row.notes}</dd>
+          </div>
+        )}
         <div className="grid grid-cols-1 gap-4 border-t border-zinc-100 pt-4 sm:grid-cols-2">
           <div>
             <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500">
@@ -135,6 +243,14 @@ export default async function InspectionRequestDetailPage({
           </div>
         </div>
       </dl>
+
+      {isInspector && !['completed', 'cancelled'].includes(row.status) && (
+        <InspectorActions
+          requestId={row.id}
+          status={row.status}
+          isAcceptor={isAcceptor}
+        />
+      )}
     </div>
   )
 }
