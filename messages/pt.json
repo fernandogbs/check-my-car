@@ -129,6 +129,41 @@
       "backToLogin": "Voltar ao login"
     }
   },
+  "BuyerDashboard": {
+    "welcomeWithName": "Bem-vindo de volta, {name}",
+    "welcomeGeneric": "Bem-vindo de volta",
+    "subtitle": "Gerencie suas vistorias veiculares e acompanhe cada status.",
+    "sectionRequests": "Suas inspeções",
+    "empty": "Você ainda não tem solicitações de vistoria. Comece em Nova solicitação.",
+    "metrics": {
+      "total": "Total",
+      "active": "Em andamento",
+      "completed": "Concluídas"
+    },
+    "updated": "Atualizado {time}",
+    "ctaDetails": "Detalhes",
+    "ctaReport": "Ver laudo",
+    "detail": {
+      "title": "Solicitação de vistoria",
+      "back": "Voltar ao painel",
+      "plate": "Placa",
+      "year": "Ano",
+      "model": "Marca e modelo",
+      "location": "Local da vistoria",
+      "type": "Tipo de inspeção",
+      "created": "Solicitado em",
+      "updated": "Última atualização"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "pending": "Pendente",
+      "accepted": "Aceita",
+      "in_progress": "Em andamento",
+      "awaiting_report": "Aguardando laudo",
+      "completed": "Concluída",
+      "cancelled": "Cancelada"
+    }
+  },
   "Metadata": {
     "title": "Check My Car",
     "description": "Gestão e acompanhamento do seu veículo"

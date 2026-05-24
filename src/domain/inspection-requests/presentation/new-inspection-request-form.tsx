@@ -191,14 +191,14 @@ export function NewInspectionRequestForm() {
 
   function handleBack() {
     if (step === 1) {
-      router.push('/')
+      router.push('/dashboard')
       return
     }
     setStep((prev) => (prev === 3 ? 2 : 1))
   }
 
   function handleCancel() {
-    router.push('/')
+    router.push('/dashboard')
   }
 
   async function uploadAttachment(file: File): Promise<string> {
@@ -284,7 +284,7 @@ export function NewInspectionRequestForm() {
         return
       }
 
-      router.push('/')
+      router.push('/dashboard')
     })
   }
 
