@@ -225,5 +225,14 @@
   "Metadata": {
     "title": "Check My Car",
     "description": "Gestão e acompanhamento do seu veículo"
+  },
+  "Profile": {
+    "settings": {
+      "language": "Idioma",
+      "languages": {
+        "pt": "Português",
+        "en": "English"
+      }
+    }
   }
 }
