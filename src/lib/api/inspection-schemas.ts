@@ -36,8 +36,16 @@ export const patchInspectionStatusSchema = z.object({
   result_summary: z.unknown().optional().nullable(),
 })
 
+export const reportResultSchema = z.enum(['aprovado', 'reprovado', 'aprovado_com_ressalvas'])
+
+export const reportSummarySchema = z.object({
+  resultado: reportResultSchema,
+  observacoes: z.string().trim().max(4000).optional().default(''),
+})
+
 export const postInspectionReportSchema = z.object({
   report_storage_path: z.string().min(1).max(2048),
+  result_summary: reportSummarySchema,
 })
 
 export const requestIdParamSchema = z.object({

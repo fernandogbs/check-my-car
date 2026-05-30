@@ -118,6 +118,23 @@ export async function updateInspectionStatus(
   status: string,
 ): Promise<void> {
   const admin = createAdminClient()
+
+  if (status === 'completed') {
+    const { data: row } = await admin
+      .from('inspection_requests')
+      .select('report_storage_path, accepted_by')
+      .eq('id', requestId)
+      .maybeSingle()
+
+    if (!row?.accepted_by) {
+      throw new Error('invalid_transition')
+    }
+
+    if (!row?.report_storage_path) {
+      throw new Error('invalid_transition')
+    }
+  }
+
   await admin
     .from('inspection_requests')
     .update({ status, updated_at: new Date().toISOString() })

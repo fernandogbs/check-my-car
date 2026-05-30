@@ -178,7 +178,16 @@
       "location": "Inspection location",
       "type": "Inspection type",
       "created": "Requested on",
-      "updated": "Last updated"
+      "updated": "Last updated",
+      "reportSection": "Inspection report",
+      "reportResult": "Result",
+      "reportObservations": "Notes",
+      "reportSubmittedAt": "Submitted on",
+      "reportDownload": "Download report (PDF)",
+      "reportEmpty": "Report not available yet.",
+      "reportDownloadError": "Could not open the report.",
+      "submitReport": "Submit report",
+      "resubmitReport": "Resubmit report"
     },
     "status": {
       "draft": "Draft",
@@ -187,7 +196,50 @@
       "in_progress": "In progress",
       "awaiting_report": "Awaiting report",
       "completed": "Completed",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "result": {
+        "aprovado": "Approved",
+        "reprovado": "Rejected",
+        "aprovado_com_ressalvas": "Approved with remarks"
+      }
+    }
+  },
+  "InspectionReport": {
+    "title": "Submit Report",
+    "subtitle": "Fill in the inspection result and attach the PDF document.",
+    "vehicleLabel": "Inspected vehicle",
+    "result": {
+      "label": "Inspection result",
+      "aprovado": "Approved",
+      "reprovado": "Rejected",
+      "aprovado_com_ressalvas": "Approved with remarks"
+    },
+    "observations": {
+      "label": "Notes",
+      "placeholder": "Describe the points observed during the inspection..."
+    },
+    "file": {
+      "title": "Report PDF",
+      "subtitle": "PDF up to 10MB",
+      "cta": "Choose",
+      "change": "Change",
+      "remove": "Remove file",
+      "selected": "Ready to upload"
+    },
+    "actions": {
+      "submit": "Submit report",
+      "submitting": "Submitting…",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "generic": "Could not submit the report. Please try again.",
+      "unauthorized": "Your session expired. Please sign in again.",
+      "forbidden": "You are not allowed to submit this report.",
+      "uploadFailed": "Failed to upload the file. Please try again.",
+      "fileTooLarge": "File exceeds the 10MB limit.",
+      "fileType": "Only PDF files are accepted.",
+      "validation": "Select a PDF file and a result before submitting.",
+      "invalidState": "This report can no longer be submitted."
     }
   },
   "InspectorDashboard": {

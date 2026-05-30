@@ -41,10 +41,15 @@ async function uploadAttachment(file: File): Promise<string> {
   const formData = new FormData()
   formData.append('file', file)
 
-  const response = await fetch('/api/inspection/attachments', {
-    method: 'POST',
-    body: formData,
-  })
+  let response: Response
+  try {
+    response = await fetch('/api/inspection/attachments', {
+      method: 'POST',
+      body: formData,
+    })
+  } catch {
+    throw new Error('uploadFailed')
+  }
 
   if (response.status === 401) throw new Error('unauthorized')
   if (!response.ok) throw new Error('uploadFailed')

@@ -5,6 +5,7 @@ import {
 import { jsonError, jsonOk } from '@/lib/api/json-response'
 import { readJsonBody } from '@/lib/api/request-json'
 import { requireUser } from '@/lib/api/supabase-session'
+import type { Json } from '@/lib/supabase/database.types'
 
 type RouteContext = { params: Promise<{ requestId: string }> }
 
@@ -63,6 +64,7 @@ export async function POST(request: Request, context: RouteContext) {
     .from('inspection_requests')
     .update({
       report_storage_path: body.data.report_storage_path,
+      result_summary: body.data.result_summary as Json,
       report_submitted_at: submittedAt,
       status: nextStatus,
     })

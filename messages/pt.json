@@ -178,7 +178,16 @@
       "location": "Local da vistoria",
       "type": "Tipo de inspeção",
       "created": "Solicitado em",
-      "updated": "Última atualização"
+      "updated": "Última atualização",
+      "reportSection": "Laudo de inspeção",
+      "reportResult": "Resultado",
+      "reportObservations": "Observações",
+      "reportSubmittedAt": "Enviado em",
+      "reportDownload": "Baixar laudo (PDF)",
+      "reportEmpty": "Laudo ainda não disponível.",
+      "reportDownloadError": "Não foi possível abrir o laudo.",
+      "submitReport": "Enviar laudo",
+      "resubmitReport": "Reenviar laudo"
     },
     "status": {
       "draft": "Rascunho",
@@ -187,7 +196,50 @@
       "in_progress": "Em andamento",
       "awaiting_report": "Aguardando laudo",
       "completed": "Concluída",
-      "cancelled": "Cancelada"
+      "cancelled": "Cancelada",
+      "result": {
+        "aprovado": "Aprovado",
+        "reprovado": "Reprovado",
+        "aprovado_com_ressalvas": "Aprovado com ressalvas"
+      }
+    }
+  },
+  "InspectionReport": {
+    "title": "Enviar Laudo",
+    "subtitle": "Preencha o resultado da inspeção e anexe o documento PDF.",
+    "vehicleLabel": "Veículo inspecionado",
+    "result": {
+      "label": "Resultado da inspeção",
+      "aprovado": "Aprovado",
+      "reprovado": "Reprovado",
+      "aprovado_com_ressalvas": "Aprovado com ressalvas"
+    },
+    "observations": {
+      "label": "Observações",
+      "placeholder": "Descreva os pontos observados durante a inspeção..."
+    },
+    "file": {
+      "title": "Laudo em PDF",
+      "subtitle": "PDF até 10MB",
+      "cta": "Escolher",
+      "change": "Trocar",
+      "remove": "Remover arquivo",
+      "selected": "Pronto para envio"
+    },
+    "actions": {
+      "submit": "Enviar laudo",
+      "submitting": "Enviando…",
+      "cancel": "Cancelar"
+    },
+    "errors": {
+      "generic": "Não foi possível enviar o laudo. Tente novamente.",
+      "unauthorized": "Sua sessão expirou. Entre novamente.",
+      "forbidden": "Você não tem permissão para enviar este laudo.",
+      "uploadFailed": "Falha ao enviar o arquivo. Tente novamente.",
+      "fileTooLarge": "Arquivo excede o limite de 10MB.",
+      "fileType": "Apenas PDF é aceito.",
+      "validation": "Selecione um arquivo PDF e um resultado antes de enviar.",
+      "invalidState": "Este laudo não pode mais ser enviado."
     }
   },
   "InspectorDashboard": {

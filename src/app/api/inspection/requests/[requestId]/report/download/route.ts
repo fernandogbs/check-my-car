@@ -6,9 +6,9 @@ import { canViewReport } from '@/features/inspection-requests/utils/report-visib
 type RouteContext = { params: Promise<{ requestId: string }> }
 
 /**
- * Vista resumida do resultado para cliente e profissional.
+ * Gera uma URL assinada (60 s) para download do laudo.
  * Visibility enforced in code: creator OR acceptor OR (pending & unassigned).
- * @see supabase/API.md — Visualização do resultado
+ * @see supabase/API.md — Download do laudo
  */
 export async function GET(_request: Request, context: RouteContext) {
   const session = await requireUser()
@@ -23,12 +23,12 @@ export async function GET(_request: Request, context: RouteContext) {
   }
 
   const { user, admin } = session
+  const requestId = idParsed.data.requestId
+
   const { data, error } = await admin
     .from('inspection_requests')
-    .select(
-      'id, status, vehicle_plate, vehicle_model, result_summary, report_storage_path, report_submitted_at, updated_at, created_by, accepted_by'
-    )
-    .eq('id', idParsed.data.requestId)
+    .select('report_storage_path, created_by, accepted_by, status')
+    .eq('id', requestId)
     .maybeSingle()
 
   if (error) {
@@ -50,16 +50,17 @@ export async function GET(_request: Request, context: RouteContext) {
     return jsonError(404, 'not_found', 'Inspection request not found.')
   }
 
-  return jsonOk({
-    data: {
-      id: data.id,
-      status: data.status,
-      vehicle_plate: data.vehicle_plate,
-      vehicle_model: data.vehicle_model,
-      result_summary: data.result_summary,
-      report_storage_path: data.report_storage_path,
-      report_submitted_at: data.report_submitted_at,
-      updated_at: data.updated_at,
-    },
-  })
+  if (!data.report_storage_path) {
+    return jsonError(404, 'report_not_found', 'No report has been submitted yet.')
+  }
+
+  const { data: signed, error: signError } = await admin.storage
+    .from('inspection-attachments')
+    .createSignedUrl(data.report_storage_path, 60)
+
+  if (signError || !signed) {
+    return jsonError(500, 'sign_failed', 'Failed to generate signed URL.')
+  }
+
+  return jsonOk({ url: signed.signedUrl })
 }

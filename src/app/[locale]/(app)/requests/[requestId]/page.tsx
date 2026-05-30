@@ -6,9 +6,11 @@ import {
   updateInspectionStatusAction,
 } from '@/features/inspection-requests/services/inspector-actions'
 import { buyerDashboardStatusMessageKey } from '@/features/inspection-requests/utils/buyer-dashboard-metrics'
+import { ReportDownloadButton } from '@/features/inspection-requests/components/report-download-button'
+import { reportSummarySchema } from '@/lib/api/inspection-schemas'
 import { Link } from '@/i18n/navigation'
 import { getCurrentUser } from '@/features/auth/services/current-user'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { cn } from '@/lib/utils'
 
 const UUID_RE =
@@ -36,10 +38,14 @@ function InspectorActions({
   requestId,
   status,
   isAcceptor,
+  submitLabel,
+  resubmitLabel,
 }: {
   requestId: string
   status: string
   isAcceptor: boolean
+  submitLabel: string
+  resubmitLabel: string
 }) {
   if (status === 'pending') {
     return (
@@ -81,37 +87,38 @@ function InspectorActions({
 
   if (status === 'in_progress') {
     return (
-      <form
-        action={async () => {
-          'use server'
-          await updateInspectionStatusAction(requestId, 'awaiting_report')
-        }}
+      <Link
+        href={`/requests/${requestId}/report`}
+        className="w-full rounded-xl bg-[#0055FF] py-3 text-sm font-semibold text-center text-white transition-opacity hover:opacity-90 block"
       >
-        <button
-          type="submit"
-          className="w-full rounded-xl bg-amber-500 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-        >
-          Marcar aguardando laudo
-        </button>
-      </form>
+        {submitLabel}
+      </Link>
     )
   }
 
   if (status === 'awaiting_report') {
     return (
-      <form
-        action={async () => {
-          'use server'
-          await updateInspectionStatusAction(requestId, 'completed')
-        }}
-      >
-        <button
-          type="submit"
-          className="w-full rounded-xl bg-emerald-600 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+      <div className="flex flex-col gap-3">
+        <Link
+          href={`/requests/${requestId}/report`}
+          className="w-full rounded-xl border border-[#0055FF]/25 py-3 text-sm font-semibold text-center text-[#0055FF] transition-opacity hover:opacity-80 block"
         >
-          Concluir inspeção
-        </button>
-      </form>
+          {resubmitLabel}
+        </Link>
+        <form
+          action={async () => {
+            'use server'
+            await updateInspectionStatusAction(requestId, 'completed')
+          }}
+        >
+          <button
+            type="submit"
+            className="w-full rounded-xl bg-emerald-600 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          >
+            Concluir inspeção
+          </button>
+        </form>
+      </div>
     )
   }
 
@@ -132,18 +139,27 @@ export default async function InspectionRequestDetailPage({
     notFound()
   }
 
-  const [user, supabaseClient] = await Promise.all([
+  const [user, admin] = await Promise.all([
     getCurrentUser(),
-    createClient(),
+    createAdminClient(),
   ])
 
-  const { data: row, error } = await supabaseClient
+  const { data: row, error } = await admin
     .from('inspection_requests')
     .select('*')
     .eq('id', requestId)
     .maybeSingle()
 
   if (error || !row) {
+    notFound()
+  }
+
+  const canRead =
+    row.created_by === user?.id ||
+    row.accepted_by === user?.id ||
+    (row.status === 'pending' && user?.navRole === 'inspector')
+
+  if (!canRead) {
     notFound()
   }
 
@@ -244,11 +260,65 @@ export default async function InspectionRequestDetailPage({
         </div>
       </dl>
 
+      {(() => {
+        const summaryParsed = reportSummarySchema.safeParse(row.result_summary)
+        const summary = summaryParsed.success ? summaryParsed.data : null
+
+        if (row.report_storage_path) {
+          return (
+            <section className="flex flex-col gap-4 rounded-2xl border border-black/[0.06] bg-white px-4 py-5 shadow-sm">
+              <h2 className="text-base font-semibold text-[#172339]">{t('detail.reportSection')}</h2>
+              {summary ? (
+                <>
+                  <div>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500">{t('detail.reportResult')}</dt>
+                    <dd className="mt-1">
+                      <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-semibold',
+                        summary.resultado === 'aprovado' ? 'bg-emerald-100 text-emerald-900' :
+                        summary.resultado === 'reprovado' ? 'bg-red-100 text-red-900' :
+                        'bg-amber-100 text-amber-950'
+                      )}>
+                        {t(`status.result.${summary.resultado}`)}
+                      </span>
+                    </dd>
+                  </div>
+                  {summary.observacoes && (
+                    <div>
+                      <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500">{t('detail.reportObservations')}</dt>
+                      <dd className="mt-1 text-sm text-zinc-800">{summary.observacoes}</dd>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className="text-sm text-zinc-600">{t('detail.reportEmpty')}</p>
+              )}
+              {row.report_submitted_at && (
+                <div>
+                  <dt className="text-xs font-medium uppercase tracking-wide text-zinc-500">{t('detail.reportSubmittedAt')}</dt>
+                  <dd className="mt-1 text-sm text-zinc-800">
+                    {format.dateTime(new Date(row.report_submitted_at), { dateStyle: 'medium', timeStyle: 'short' })}
+                  </dd>
+                </div>
+              )}
+              <ReportDownloadButton requestId={row.id} />
+            </section>
+          )
+        }
+
+        if (!row.report_storage_path && row.status !== 'pending' && row.created_by === user?.id) {
+          return <p className="text-sm text-zinc-500 italic">{t('detail.reportEmpty')}</p>
+        }
+
+        return null
+      })()}
+
       {isInspector && !['completed', 'cancelled'].includes(row.status) && (
         <InspectorActions
           requestId={row.id}
           status={row.status}
           isAcceptor={isAcceptor}
+          submitLabel={t('detail.submitReport')}
+          resubmitLabel={t('detail.resubmitReport')}
         />
       )}
     </div>

@@ -40,12 +40,19 @@ export async function POST(request: Request) {
   const path = generatePath(user.id, file)
   const buffer = await file.arrayBuffer()
 
-  const { error } = await admin.storage
-    .from(ATTACHMENT_BUCKET)
-    .upload(path, buffer, { contentType: file.type, upsert: false })
+  let uploadError: unknown
+  try {
+    const { error } = await admin.storage
+      .from(ATTACHMENT_BUCKET)
+      .upload(path, buffer, { contentType: file.type, upsert: false })
+    uploadError = error ?? null
+  } catch (err) {
+    uploadError = err
+  }
 
-  if (error) {
-    return jsonError(500, 'upload_failed', error.message)
+  if (uploadError) {
+    const msg = uploadError instanceof Error ? uploadError.message : String(uploadError)
+    return jsonError(500, 'upload_failed', msg)
   }
 
   return jsonOk({ path }, 201)
