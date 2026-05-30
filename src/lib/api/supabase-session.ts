@@ -1,5 +1,5 @@
 import { createAdminClient } from '@/lib/supabase/admin'
-import { getSessionClaims } from '@/lib/auth/current-user'
+import { getSessionClaims } from '@/features/auth/services/current-user'
 import { jsonError } from '@/lib/api/json-response'
 
 export async function requireUser() {

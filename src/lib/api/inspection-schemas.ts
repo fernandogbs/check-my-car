@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import type { Database } from '@/lib/supabase/database.types'
-import { INSPECTION_TYPES } from '@/domain/inspection-requests/model/inspection-type'
+import { INSPECTION_TYPES } from '@/features/inspection-requests/types/inspection-type'
 
 export type InspectionRequestStatus =
   Database['public']['Tables']['inspection_requests']['Row']['status']

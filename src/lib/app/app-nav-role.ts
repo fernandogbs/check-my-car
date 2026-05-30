@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { getSessionClaims, navRoleFromTipo } from '@/lib/auth/current-user'
+import { getSessionClaims, navRoleFromTipo } from '@/features/auth/services/current-user'
 
 import type { AppNavRole } from '@/lib/app/app-nav-role-types'
 
