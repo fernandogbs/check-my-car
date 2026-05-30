@@ -1,4 +1,4 @@
-import { Bell, Car } from 'lucide-react'
+import { Car } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 import { getCurrentUser } from '@/features/auth/services/current-user'
@@ -44,13 +44,6 @@ export async function AppHeader() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            aria-label="Notifications"
-            className="flex size-9 items-center justify-center rounded-full text-brand-auth-muted transition-colors hover:bg-brand-auth-soft/70 hover:text-brand-auth"
-            type="button"
-          >
-            <Bell aria-hidden className="size-5" strokeWidth={2} />
-          </button>
           <div
             aria-label={displayName ?? undefined}
             className={cn(
