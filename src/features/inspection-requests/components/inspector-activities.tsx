@@ -58,28 +58,6 @@ function typeLabel(type: string): string {
 function ActiveInspectionCard({ row }: { row: InspectionRequestRow }) {
   return (
     <article className="overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-sm">
-      <div className="relative aspect-[16/7] w-full overflow-hidden bg-gradient-to-br from-slate-200 via-slate-300 to-blue-200">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(100,120,180,0.15) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(100,120,180,0.15) 1px, transparent 1px)
-            `,
-            backgroundSize: '32px 32px',
-          }}
-        />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="flex size-10 items-center justify-center rounded-full bg-[#0055FF] shadow-lg">
-            <MapPin aria-hidden className="size-5 text-white" strokeWidth={2.5} />
-          </div>
-        </div>
-        <span className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-          <span className="size-1.5 rounded-full bg-red-400" />
-          Rastreamento ativo
-        </span>
-      </div>
-
       <div className="flex flex-col gap-3 px-4 pb-4 pt-3">
         <div className="flex items-start justify-between gap-3">
           <div>

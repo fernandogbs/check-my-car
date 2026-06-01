@@ -140,28 +140,28 @@ export async function BuyerDashboard({ displayName, rows }: BuyerDashboardProps)
                         '0 1px 2px color-mix(in oklch, var(--brand-auth) 8%, transparent)',
                     }}
                   >
-                    <div className="relative aspect-[21/9] min-h-[100px] w-full bg-gradient-to-br from-zinc-100 to-zinc-200">
-                      <span
-                        className={cn(
-                          'absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold',
-                          statusBadgeClass(row.status),
-                        )}
-                      >
-                        {t(statusKey)}
-                      </span>
-                    </div>
                     <div className="flex flex-col gap-3 px-4 pb-4 pt-3">
-                      <div>
-                        <h3 className="text-base font-semibold text-[#172339]">
-                          {row.vehicle_model}
-                        </h3>
-                        <p className="mt-0.5 text-sm text-zinc-600">
-                          {row.vehicle_plate}
-                          {' · '}
-                          {row.vehicle_year}
-                          {' · '}
-                          {typeLabel}
-                        </p>
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <h3 className="text-base font-semibold text-[#172339]">
+                            {row.vehicle_model}
+                          </h3>
+                          <p className="mt-0.5 text-sm text-zinc-600">
+                            {row.vehicle_plate}
+                            {' · '}
+                            {row.vehicle_year}
+                            {' · '}
+                            {typeLabel}
+                          </p>
+                        </div>
+                        <span
+                          className={cn(
+                            'shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold',
+                            statusBadgeClass(row.status),
+                          )}
+                        >
+                          {t(statusKey)}
+                        </span>
                       </div>
                       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-100 pt-3">
                         <p className="text-xs text-zinc-500">
