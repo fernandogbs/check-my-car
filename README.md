@@ -1,6 +1,6 @@
 # Check My Car
 
-Aplicação web que conecta compradores de veículos a inspetores automotivos. Compradores submetem solicitações de vistoria para veículos usados; inspetores consultam as solicitações abertas, aceitam uma, realizam a vistoria presencial e enviam um laudo estruturado. O laudo fica disponível para o comprador baixar.
+Aplicação PWA que conecta compradores de veículos a inspetores automotivos. Compradores submetem solicitações de vistoria para veículos usados; inspetores consultam as solicitações abertas, aceitam uma, realizam a vistoria presencial e enviam um laudo estruturado. O laudo fica disponível para o comprador baixar.
 
 ## Visão geral
 
