@@ -1,8 +1,8 @@
 # API HTTP ↔ Supabase (`inspection_requests`)
 
-Rotas Next.js em `app/api/**` usam o cliente SSR (`@/lib/supabase/server`) com cookies de sessão: o Postgres aplica **RLS**; não uses `service_role` nestas rotas.
+Rotas Next.js em `app/api/**` usam o cliente **service-role** (`@/lib/supabase/admin`) que contorna o RLS. A validação de dono (ownership) é feita em código nas route handlers — não via políticas RLS.
 
-Aplicar migração antes de testar:
+Aplicar migrações antes de testar:
 
 ```bash
 bunx supabase db push   # remoto, com link
@@ -19,19 +19,26 @@ Respostas de erro são JSON com o formato:
 { "error": { "code": "string_curta", "message": "detalhe" } }
 ```
 
-Códigos HTTP usados com frequência: `400` (validação / transição inválida), `401` (sem sessão), `403` (proibido pela rota), `404` (não encontrado ou RLS), `409` (conflito, p.ex. aceite duplicado), `500` (erro Supabase / Postgres).
+Códigos HTTP usados com frequência: `400` (validação / transição inválida), `401` (sem sessão), `403` (proibido pela rota), `404` (não encontrado ou sem permissão de leitura), `409` (conflito, p.ex. aceite duplicado), `500` (erro Supabase / Postgres).
 
 ---
 
 ## 1. Autenticação
 
+A autenticação é **própria** (não usa Supabase Auth / OAuth). O fluxo:
+
+- Utilizadores ficam em `public.users` (colunas `id`, `email`, `nome`, `senha` hash bcrypt, `telefone`, `tipo_usuario`, `created_at`).
+- No login, o servidor verifica a senha com o cliente service-role e emite um **cookie de sessão assinado** `cmc_session` (HMAC-SHA256 via Web Crypto, segredo `AUTH_SECRET`), com claims `{ sub, role, exp }`.
+- Todas as rotas de API lêem o cookie `cmc_session`, verificam a assinatura e usam `sub` como ID do utilizador para aceder a `public.users` e `inspection_requests` via service-role.
+- `public.users` tem RLS ativado com `revoke all from anon, authenticated` — a chave pública (publishable key) não consegue ler hashes de senha nem dados de utilizadores.
+
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| `GET` | `/api/auth/me` | Devolve `id`, `email`, `app_metadata`, `created_at` do utilizador da sessão atual. |
+| `GET` | `/api/auth/me` | Devolve `id`, `email`, `nome`, `tipo_usuario`, `telefone`, `created_at` do registo em `public.users` da sessão atual. |
 
-**401** — sem sessão válida.
+**401** — sem sessão válida (cookie `cmc_session` ausente, expirado ou assinatura inválida).
 
-Fluxo de login continua nas páginas `/{locale}/auth/*` e no callback OAuth; esta rota serve para o cliente confirmar a sessão após cookies definidos.
+O callback OAuth (`/{locale}/auth/callback`) foi removido — não existe fluxo OAuth.
 
 ---
 
@@ -39,7 +46,7 @@ Fluxo de login continua nas páginas `/{locale}/auth/*` e no callback OAuth; est
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| `GET` | `/api/inspection/requests` | Lista linhas permitidas por RLS (próprias, aceites por ti, ou `pending` na fila). |
+| `GET` | `/api/inspection/requests` | Lista linhas visíveis ao utilizador (próprias, aceites por ti, ou `pending` na fila — validação em código). |
 | `POST` | `/api/inspection/requests` | Cria registo em `public.inspection_requests`. |
 
 **Corpo `POST` (JSON)**
@@ -51,7 +58,7 @@ Fluxo de login continua nas páginas `/{locale}/auth/*` e no callback OAuth; est
 | `notes` | string \| null | não | até 4000 chars |
 | `status` | `"draft"` \| `"pending"` | não | omissão: `pending` |
 
-`created_by` é sempre o `auth.uid()` da sessão (validado por RLS).
+`created_by` é sempre o `id` da sessão atual (definido em código na route handler).
 
 **201** — `{ "data": { ...row } }`.
 
@@ -63,7 +70,7 @@ Fluxo de login continua nas páginas `/{locale}/auth/*` e no callback OAuth; est
 |--------|------|-----------|
 | `GET` | `/api/inspection/requests/{requestId}` | Detalhe completo (UUID). |
 
-**404** — id inexistente ou sem permissão de leitura (RLS).
+**404** — id inexistente ou sem permissão de leitura (validação em código: criador, aceitante, ou pendente sem aceitante).
 
 ---
 
@@ -71,7 +78,7 @@ Fluxo de login continua nas páginas `/{locale}/auth/*` e no callback OAuth; est
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| `POST` | `/api/inspection/requests/{requestId}/accept` | Chama a RPC `accept_inspection_request`: só para filas `pending` sem `accepted_by`. |
+| `POST` | `/api/inspection/requests/{requestId}/accept` | UPDATE atómico condicional (admin): só para filas `pending` sem `accepted_by`. |
 
 **409 / 400** — não pendente ou já atribuída (mensagem da RPC).
 
@@ -92,10 +99,10 @@ Fluxo de login continua nas páginas `/{locale}/auth/*` e no callback OAuth; est
 | `status` | ver enum na migração | sim |
 | `result_summary` | JSON arbitrário \| null | não |
 
-Regras de aplicação:
+Regras de aplicação (validadas em código na route handler):
 
-- Criador: apenas `draft`, `pending`, `cancelled` enquanto não houver aceite (RLS).
-- Profissional aceite: alterações permitidas pelas políticas de `accepted_by`.
+- Criador: apenas `draft`, `pending`, `cancelled` enquanto não houver aceite (`accepted_by is null`).
+- Profissional aceite: alterações permitidas enquanto `accepted_by = user.id`.
 - `completed`: exige laudo (`report_storage_path`) e aceite prévio (validação na rota).
 
 Estados possíveis: `draft`, `pending`, `accepted`, `in_progress`, `awaiting_report`, `completed`, `cancelled`.
@@ -114,7 +121,7 @@ Estados possíveis: `draft`, `pending`, `accepted`, `in_progress`, `awaiting_rep
 |-------|------|-------------|
 | `report_storage_path` | string | sim (caminho no bucket Storage após upload) |
 
-Apenas o profissional com `accepted_by = auth.uid()` pode submeter (403 caso contrário).
+Apenas o profissional com `accepted_by = user.id` pode submeter (403 caso contrário). Validação em código na route handler.
 
 Upload do ficheiro: usa o fluxo normal do Supabase Storage (URL assinada ou cliente) **antes** de chamar esta rota; aqui só persistimos o caminho.
 
@@ -126,13 +133,13 @@ Upload do ficheiro: usa o fluxo normal do Supabase Storage (URL assinada ou clie
 |--------|------|-----------|
 | `GET` | `/api/inspection/requests/{requestId}/result` | Campos resumidos: `id`, `status`, `vehicle_plate`, `vehicle_model`, `result_summary`, `report_storage_path`, `report_submitted_at`, `updated_at`. |
 
-Mesmas regras de leitura que o `GET` detalhe (RLS).
+Mesmas regras de leitura que o `GET` detalhe (validação em código).
 
 ---
 
 ## Tabela `public.inspection_requests`
 
-Definida em `supabase/migrations/20260511192208_inspection_requests.sql`, com RLS e função `public.accept_inspection_request(uuid)`.
+Definida em `supabase/migrations/20260511192208_inspection_requests.sql` (estrutura, RLS, função `accept_inspection_request`). A migração `20260524130000_users_auth_and_inspection_fk.sql` reponta as FKs `created_by`/`accepted_by` de `auth.users` para `public.users` e bloqueia o acesso da chave pública a `public.users`. A validação de dono é feita em código nas route handlers (service-role contorna o RLS).
 
 ---
 
@@ -140,17 +147,17 @@ Definida em `supabase/migrations/20260511192208_inspection_requests.sql`, com RL
 
 ### Pré-requisitos
 
-1. Migração aplicada e app a correr (`bun run dev`, por defeito `http://localhost:3000`).
-2. Dois utilizadores autenticados no Supabase Auth (ex.: **Cliente** e **Profissional**), cada um com sessão no browser após login.
-3. Copiar o header `Cookie` da aba **Network** (qualquer pedido autenticado ao teu domínio) ou os cookies `sb-*` em **Application → Cookies**.
+1. Migrações aplicadas e app a correr (`bun run dev`, por defeito `http://localhost:3000`).
+2. Dois utilizadores registados em `public.users` (ex.: **Cliente** e **Profissional**), cada um com sessão no browser após login.
+3. Copiar o header `Cookie` da aba **Network** (qualquer pedido autenticado ao teu domínio) ou o cookie `cmc_session` em **Application → Cookies**.
 
 Define variáveis (ajusta os valores):
 
 ```bash
 export BASE_URL="http://localhost:3000"
-# Cookie completo tal como no browser (pode incluir vários sb-*)
-export COOKIE_CLIENTE='sb-...=...; sb-...=...'
-export COOKIE_PROFISSIONAL='sb-...=...; sb-...=...'
+# Cookie de sessão própria (cmc_session=...)
+export COOKIE_CLIENTE='cmc_session=...'
+export COOKIE_PROFISSIONAL='cmc_session=...'
 # Opcional: jq para extrair UUID da resposta de criação (brew install jq / pacman -S jq)
 ```
 
@@ -193,7 +200,7 @@ curl -sS "$BASE_URL/api/auth/me" \
   -w "\nHTTP %{http_code}\n"
 ```
 
-Resposta esperada (`200`): JSON com `id`, `email`, `app_metadata`, `created_at`.
+Resposta esperada (`200`): JSON com `id`, `email`, `nome`, `tipo_usuario`, `telefone`, `created_at`.
 
 ### T2 — Sem sessão (`401`)
 
@@ -368,8 +375,9 @@ curl -sS -X PATCH "$BASE_URL/api/inspection/requests/$REQUEST_ID/status" \
 
 ---
 
-## Segurança (Supabase)
+## Segurança
 
-- Não uses `user_metadata` em políticas; papéis vão em `app_metadata` se precisares de perfis.
-- A RPC `accept_inspection_request` é `SECURITY DEFINER` com `search_path` fixo apenas para o UPDATE controlado — revê se alterares a função.
-- Garante **RLS** + **GRANT** coerentes ao expor tabelas na Data API.
+- `public.users` tem RLS ativado + `revoke all from anon, authenticated` — a chave pública (publishable key) não consegue aceder a dados de utilizadores (incluindo hashes de senha). Auth ocorre apenas via service-role no servidor.
+- As route handlers de `inspection_requests` usam o admin client (service-role) e implementam a validação de dono em código (sem depender de políticas RLS para `inspection_requests`). O RLS de `inspection_requests` permanece ativo mas é contornado pelo service-role.
+- A RPC `accept_inspection_request` (SECURITY DEFINER) permanece na BD mas já não é chamada — o aceite é feito via UPDATE atómico condicional na route handler.
+- Cookie `cmc_session` é `httpOnly`, `sameSite: lax`, `secure` em produção.
