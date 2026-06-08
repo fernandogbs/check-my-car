@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
+import { Toaster } from 'sonner'
 import {
   getMessages,
   getTranslations,
@@ -44,6 +45,7 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <QueryProvider>{children}</QueryProvider>
+      <Toaster richColors position="top-center" />
     </NextIntlClientProvider>
   )
 }

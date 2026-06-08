@@ -124,8 +124,21 @@
       "oauthCallback": "Não foi possível concluir o login. Tente novamente."
     },
     "ForgotPage": {
-      "title": "Recuperar senha",
-      "body": "Este fluxo está em breve. Entre em contato com o suporte se precisar de ajuda."
+      "title": "Redefinir senha",
+      "body": "Informe seu e-mail cadastrado para continuar.",
+      "bodyStep2": "E-mail verificado. Escolha sua nova senha.",
+      "newPassword": "Nova senha",
+      "confirmPassword": "Confirmar nova senha",
+      "continue": "Continuar",
+      "submit": "Redefinir senha",
+      "errors": {
+        "emailNotFound": "Nenhuma conta encontrada com este e-mail.",
+        "passwordTooShort": "A senha precisa ter pelo menos 6 caracteres.",
+        "passwordMismatch": "As senhas não coincidem."
+      },
+      "toastEmailFound": "E-mail verificado!",
+      "toastPasswordReset": "Troca de senha realizada com sucesso",
+      "toastError": "Algo errado aconteceu, tente novamente depois."
     },
     "RegisterPage": {
       "title": "Criar conta",

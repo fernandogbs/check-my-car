@@ -125,7 +125,20 @@
     },
     "ForgotPage": {
       "title": "Reset password",
-      "body": "This flow is coming soon. Contact support if you need help."
+      "body": "Enter your registered email to continue.",
+      "bodyStep2": "Email verified. Choose your new password.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "continue": "Continue",
+      "submit": "Reset password",
+      "errors": {
+        "emailNotFound": "No account found with this email.",
+        "passwordTooShort": "Password must be at least 6 characters.",
+        "passwordMismatch": "Passwords do not match."
+      },
+      "toastEmailFound": "Email verified!",
+      "toastPasswordReset": "Password changed successfully",
+      "toastError": "Something went wrong, please try again later."
     },
     "RegisterPage": {
       "title": "Create account",
