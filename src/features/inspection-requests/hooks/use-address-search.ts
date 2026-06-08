@@ -56,7 +56,6 @@ function formatLabel(props: PhotonProperties): string {
 async function fetchAddresses(query: string): Promise<AddressSuggestion[]> {
   const params = new URLSearchParams({
     q: query,
-    lang: 'pt',
     limit: '5',
     bbox: '-73.9872,-33.7683,-28.8350,5.2718',
   })
