@@ -44,7 +44,9 @@
       },
       "location": {
         "label": "Local da Vistoria",
-        "placeholder": "Digite o endereço ou nome da loja"
+        "placeholder": "Digite o endereço ou nome da loja",
+        "searching": "Buscando endereços…",
+        "noResults": "Nenhum endereço encontrado"
       }
     },
     "additional": {

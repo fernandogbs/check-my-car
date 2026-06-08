@@ -44,7 +44,9 @@
       },
       "location": {
         "label": "Inspection Location",
-        "placeholder": "Type the address or shop name"
+        "placeholder": "Type the address or shop name",
+        "searching": "Searching addresses…",
+        "noResults": "No addresses found"
       }
     },
     "additional": {

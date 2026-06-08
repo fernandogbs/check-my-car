@@ -1,14 +1,14 @@
 'use client'
 
-import { Briefcase, MapPin, ShieldCheck, RefreshCcw } from 'lucide-react'
+import { Briefcase, ShieldCheck, RefreshCcw } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/components/ui/card'
-import { Input } from '@/shared/components/ui/input'
 import { Label } from '@/shared/components/ui/label'
 import { RadioGroup, RadioItem } from '@/shared/components/ui/radio-group'
 import { cn } from '@/lib/utils'
 
+import { AddressSearch } from '../address-search'
 import type { InspectionType } from '../../types/inspection-type'
 import type { MarketSlice } from '../../types/inspection-request-schema'
 
@@ -94,28 +94,18 @@ export function MarketStep({ values, errors, onChange }: MarketStepProps) {
           >
             {t('location.label')}
           </Label>
-          <div className="relative flex items-center">
-            <MapPin
-              aria-hidden
-              className="pointer-events-none absolute left-4 size-[1.1rem] text-brand-auth-muted"
-              strokeWidth={2}
-            />
-            <Input
-              aria-describedby={
-                errors.inspection_location ? 'inspection_location-error' : undefined
-              }
-              aria-invalid={errors.inspection_location ? true : undefined}
-              autoComplete="off"
-              className="h-12 rounded-xl border-0 bg-brand-auth-soft/90 pl-[2.625rem] pr-4 shadow-none ring-0 placeholder:text-brand-auth-muted/80 focus-visible:ring-[3px] focus-visible:ring-brand-auth/18 sm:h-[3.125rem]"
-              id="inspection_location"
-              name="inspection_location"
-              onChange={(event) =>
-                onChange('inspection_location', event.target.value)
-              }
-              placeholder={t('location.placeholder')}
-              value={values.inspection_location}
-            />
-          </div>
+          <AddressSearch
+            aria-describedby={
+              errors.inspection_location ? 'inspection_location-error' : undefined
+            }
+            aria-invalid={errors.inspection_location ? true : undefined}
+            id="inspection_location"
+            noResultsLabel={t('location.noResults')}
+            onChange={(value) => onChange('inspection_location', value)}
+            placeholder={t('location.placeholder')}
+            searchingLabel={t('location.searching')}
+            value={values.inspection_location}
+          />
           {errors.inspection_location ? (
             <p
               className="text-xs leading-snug text-destructive"
